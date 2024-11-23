@@ -12,12 +12,14 @@ import '../assets/scss/index.scss';
 
 const ScamSenseIndex = function (props) {
     return (
-        <MainNavbar></MainNavbar>
+        <Container>
+            <MainNavbar />
+        </Container>
     )
 }
 
 root.render(
     <BrowserRouter>
-        <ScamSenseIndex/>,
+        <ScamSenseIndex/>
     </BrowserRouter>
 );

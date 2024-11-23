@@ -1,0 +1,15 @@
+{% load static %}
+<!doctype html>
+<link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" >
+<html>
+  <head>
+    <title>Scam Sense</title>
+  </head>
+  <body>
+    {% block content %}
+      <div id="root"></div>
+      <script src="{% static 'registration_bundle.js' %}"></script>
+    {% endblock content %}
+  </body>
+</html>
+

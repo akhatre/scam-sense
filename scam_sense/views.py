@@ -8,3 +8,10 @@ class ScamSenseIndexView(TemplateView):
     # our hybrid template, shown above
     template_name = 'index.html'
 
+class RegistrationView(TemplateView):
+    # our hybrid template, shown above
+    template_name = 'registration.html'
+
+class DashboardView(TemplateView):
+    # our hybrid template, shown above
+    template_name = 'dashboard.html'

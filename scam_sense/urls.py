@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from scam_sense.views import ScamSenseIndexView
+from scam_sense.views import ScamSenseIndexView, RegistrationView, DashboardView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ScamSenseIndexView.as_view(), name='ScamSenseIndexView'),
+    path('register', RegistrationView.as_view(), name='RegistrationView'),
+    path('dashboard', DashboardView.as_view(), name='DashboardView'),
 ]
