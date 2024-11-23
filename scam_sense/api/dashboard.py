@@ -39,4 +39,6 @@ class SendMessage(viewsets.ModelViewSet):
 
         for _student in list_of_students:
             personalised_message = personalise_message(new_spam_message, _student)
-            send_email(personalised_message, _student)
+            from_email = generate_random_email()
+            send_email(personalised_message, from_email, _student)
+
