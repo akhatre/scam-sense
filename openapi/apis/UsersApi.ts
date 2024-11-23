@@ -15,15 +15,22 @@
 
 import * as runtime from '../runtime';
 import type {
+  UserLogin,
   UserRegistration,
-  UsersRegisterCreate201Response,
+  UsersLoginCreate200Response,
 } from '../models/index';
 import {
+    UserLoginFromJSON,
+    UserLoginToJSON,
     UserRegistrationFromJSON,
     UserRegistrationToJSON,
-    UsersRegisterCreate201ResponseFromJSON,
-    UsersRegisterCreate201ResponseToJSON,
+    UsersLoginCreate200ResponseFromJSON,
+    UsersLoginCreate200ResponseToJSON,
 } from '../models/index';
+
+export interface UsersLoginCreateRequest {
+    userLogin: UserLogin;
+}
 
 export interface UsersRegisterCreateRequest {
     userRegistration: UserRegistration;
@@ -36,7 +43,44 @@ export class UsersApi extends runtime.BaseAPI {
 
     /**
      */
-    async usersRegisterCreateRaw(requestParameters: UsersRegisterCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UsersRegisterCreate201Response>> {
+    async usersLoginCreateRaw(requestParameters: UsersLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UsersLoginCreate200Response>> {
+        if (requestParameters['userLogin'] == null) {
+            throw new runtime.RequiredError(
+                'userLogin',
+                'Required parameter "userLogin" was null or undefined when calling usersLoginCreate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+        const response = await this.request({
+            path: `/api/users/login/`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserLoginToJSON(requestParameters['userLogin']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UsersLoginCreate200ResponseFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async usersLoginCreate(requestParameters: UsersLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UsersLoginCreate200Response> {
+        const response = await this.usersLoginCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async usersRegisterCreateRaw(requestParameters: UsersRegisterCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UsersLoginCreate200Response>> {
         if (requestParameters['userRegistration'] == null) {
             throw new runtime.RequiredError(
                 'userRegistration',
@@ -61,12 +105,12 @@ export class UsersApi extends runtime.BaseAPI {
             body: UserRegistrationToJSON(requestParameters['userRegistration']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UsersRegisterCreate201ResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => UsersLoginCreate200ResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async usersRegisterCreate(requestParameters: UsersRegisterCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UsersRegisterCreate201Response> {
+    async usersRegisterCreate(requestParameters: UsersRegisterCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UsersLoginCreate200Response> {
         const response = await this.usersRegisterCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, status
@@ -7,7 +8,6 @@ from django.contrib.auth.models import User
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.serializers import Serializer, CharField, ValidationError
-
 
 class UserRegistrationSerializer(Serializer):
     first_name = CharField(required=True)
@@ -34,6 +34,14 @@ class UserRegistrationSerializer(Serializer):
         return user
 
 
+class UserLoginSerializer(Serializer):
+    email = CharField(required=True)
+    password = CharField(write_only=True, required=True)
+
+    def validate(self, data):
+        return data
+
+
 class UserViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
 
@@ -52,3 +60,33 @@ class UserViewSet(viewsets.ViewSet):
             serializer.save()
             return Response({"message": "User registered successfully."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+        request=UserLoginSerializer,
+        responses={
+            200: {"type": "object", "properties": {"message": {"type": "string"}}},
+            401: {"type": "object", "properties": {"message": {"type": "string"}}},
+            400: {"type": "object", "additionalProperties": {"type": "string"}},
+        },
+    )
+    @action(detail=False, methods=["post"])
+    def login(self, request):
+
+        serializer = UserLoginSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user = authenticate(request, username=request.data['email'], password=request.data['password'])
+            if user:
+                login(request, user)
+                request.session.save()
+
+                response = JsonResponse({'message': 'Login successful'})
+                # response["Access-Control-Allow-Origin"] = "127.0.0.1:9090/register"
+                # response["Access-Control-Allow-Credentials"] = "true"
+
+                return response
+            else:
+                return JsonResponse({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

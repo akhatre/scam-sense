@@ -27,6 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ScamSenseIndexView.as_view(), name='ScamSenseIndexView'),
     path('register', RegistrationView.as_view(), name='RegistrationView'),
+    # path('login', LoginView.as_view(), name='LoginView'),
     path('dashboard', DashboardView.as_view(), name='DashboardView'),
 
     # OpenAPI schema generation endpoint

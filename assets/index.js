@@ -9,6 +9,7 @@ import {MainNavbar} from "./navbar";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 import '../assets/scss/index.scss';
 
+const isLoggedIn = window.djangoContext?.isLoggedIn || false;
 
 const ScamSenseIndex = function (props) {
     return (
@@ -20,6 +21,7 @@ const ScamSenseIndex = function (props) {
 
 root.render(
     <BrowserRouter>
+        {isLoggedIn ? "LOGGED_IN" : "LOGGED_OUT"}
         <ScamSenseIndex/>
     </BrowserRouter>
 );

@@ -2,7 +2,8 @@ apis/SchemaApi.ts
 apis/UsersApi.ts
 apis/index.ts
 index.ts
+models/UserLogin.ts
 models/UserRegistration.ts
-models/UsersRegisterCreate201Response.ts
+models/UsersLoginCreate200Response.ts
 models/index.ts
 runtime.ts

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useContext, useEffect, createContext, useRef} from 'react';
-import { UsersApi, Configuration } from '../openapi';
+import {UsersApi, Configuration} from '../openapi';
 import ReactDOM from "react-dom/client";
 import Cookies from 'js-cookie';
 
@@ -12,14 +12,19 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 import '../assets/scss/index.scss';
 
 
-
 const apiUrl = process.env.API_URL;
 
 const usersApiClient = new UsersApi(new Configuration({
     basePath: apiUrl,
-    headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-    }
+    // headers: {
+    //     'X-CSRFToken': Cookies.get('csrftoken'),
+    // },
+    // fetchApi: (input, init) => {
+    //     return fetch(input, {
+    //         ...init,
+    //         credentials: 'include', // Add this to enable cookies
+    //     });
+    // },
 }));
 
 function RegistrationForm() {
@@ -34,6 +39,8 @@ function RegistrationForm() {
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
 
+    const [isLoginForm, setIsLoginForm] = useState(true);
+
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormData({...formData, [name]: value});
@@ -44,18 +51,51 @@ function RegistrationForm() {
         setError("");
         setMessage("");
 
-        const payload = {
-    first_name: formData.firstName || "",
-    last_name: formData.lastName || "",
-    email: formData.email || "",
-    password: formData.password || "",
-    confirm_password: formData.confirmPassword || "",
-};
-        try {
-            const response = await usersApiClient.usersRegisterCreate({ userRegistration: payload });
-            setMessage(response.message);
-        } catch (err) {
-            setError(err.response?.data?.detail || "An error occurred.");
+        if (!isLoginForm) {
+            const payload = {
+                first_name: formData.firstName || "",
+                last_name: formData.lastName || "",
+                email: formData.email || "",
+                password: formData.password || "",
+                confirm_password: formData.confirmPassword || "",
+            };
+            try {
+                const response = await usersApiClient.usersRegisterCreate({userRegistration: payload});
+                setMessage(response.message);
+            } catch (err) {
+                setError(err.response?.data?.detail || "An error occurred.");
+            }
+        } else {
+            const payload = {
+                email: formData.email || "",
+                password: formData.password || "",
+            };
+            try {
+                const response = await usersApiClient.usersLoginCreate({userLogin: payload});
+                setMessage(response.message);
+            } catch (err) {
+                setError(err.response?.data?.detail || "An error occurred.");
+            }
+
+            // const csrfToken = await fetchCSRFToken();
+            //
+            // try {
+            //     const response = await fetch('/login', {
+            //         method: 'post',
+            //         headers: {
+            //             'Content-Type': 'application/json', // Ensures the server knows to expect JSON
+            //             'X-CSRFToken': csrfToken
+            //         },
+            //         body: JSON.stringify({
+            //             email: formData.email || "",
+            //             password: formData.password || "",
+            //         })
+            //     });
+            // } catch (err) {
+            //     setError(err.response?.data?.detail || "An error occurred.");
+            // }
+
+
         }
     };
 
@@ -67,37 +107,42 @@ function RegistrationForm() {
                     <div className="col-md-6">
                         <div className="card shadow">
                             <div className="card-header text-center">
-                                <h3>Register</h3>
+                                <h3>{!isLoginForm ? "Register" : "Login"}</h3>
                             </div>
                             <div className="card-body">
                                 {message && <div className="alert alert-success">{message}</div>}
                                 {error && <div className="alert alert-danger">{error}</div>}
                                 <form onSubmit={handleSubmit}>
                                     {/* Form fields */}
-                                    <div className="mb-3">
-                                        <label htmlFor="firstName" className="form-label">First Name</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="firstName"
-                                            name="firstName"
-                                            value={formData.firstName}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="lastName" className="form-label">Last Name</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="lastName"
-                                            name="lastName"
-                                            value={formData.lastName}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
+                                    {!isLoginForm ? (
+                                        <div>
+                                            <div className="mb-3">
+                                                <label htmlFor="firstName" className="form-label">First Name</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    id="firstName"
+                                                    name="firstName"
+                                                    value={formData.firstName}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="mb-3">
+                                                <label htmlFor="lastName" className="form-label">Last Name</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    id="lastName"
+                                                    name="lastName"
+                                                    value={formData.lastName}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : ""
+                                    }
                                     <div className="mb-3">
                                         <label htmlFor="email" className="form-label">Email Address</label>
                                         <input
@@ -122,20 +167,38 @@ function RegistrationForm() {
                                             required
                                         />
                                     </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-                                        <input
-                                            type="password"
-                                            className="form-control"
-                                            id="confirmPassword"
-                                            name="confirmPassword"
-                                            value={formData.confirmPassword}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
+                                    {!isLoginForm ? (
+                                        <div className="mb-3">
+                                            <label htmlFor="confirmPassword" className="form-label">Confirm
+                                                Password</label>
+                                            <input
+                                                type="password"
+                                                className="form-control"
+                                                id="confirmPassword"
+                                                name="confirmPassword"
+                                                value={formData.confirmPassword}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    ) : ''}
                                     <div className="d-grid">
-                                        <button type="submit" className="btn btn-primary">Register</button>
+                                        <button type="submit"
+                                                className="btn btn-primary mb-2">{!isLoginForm ? "Register" : "Login"}</button>
+                                        {isLoginForm ? (
+                                            <button onClick={(e) => {
+                                                e.preventDefault()
+                                                setIsLoginForm(false)
+                                            }} className="btn btn-secondary">No account? Click here to register
+                                            </button>
+                                        ) : (
+                                            <button onClick={(e) => {
+                                                e.preventDefault()
+                                                setIsLoginForm(true)
+                                            }} className="btn btn-secondary">Already have account? Click here to login
+                                            </button>
+                                        )}
+
                                     </div>
                                 </form>
                             </div>
@@ -146,6 +209,25 @@ function RegistrationForm() {
         </Container>
     );
 }
+
+// export async function fetchCSRFToken() {
+//     const response = await fetch('/csrf/');
+//     const data = await response.json();
+//     return data.csrfToken;
+// }
+
+function fetchCSRFToken() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [key, value] = cookie.trim().split('=');
+        if (key === 'csrftoken') {
+            return value;
+        }
+    }
+    return null; // Token not found
+}
+
+
 
 root.render(
     <BrowserRouter>

@@ -19,8 +19,19 @@ IS_APP_ENGINE = bool(os.environ.get("IS_APP_ENGINE", False))
 
 if IS_APP_ENGINE:
     ALLOWED_HOSTS = ['scam-sense.uc.r.appspot.com']
+    SESSION_COOKIE_SECURE = True
+
+    CORS_ALLOW_CREDENTIALS = True
 else:
-    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+    ALLOWED_HOSTS = ["127.0.0.1"]
+    # Disable secure cookies for local development
+    # SESSION_COOKIE_SECURE = False
+    # SESSION_COOKIE_SAMESITE = 'Lax'  # 'None' requires HTTPS
+    # CSRF_COOKIE_SECURE = False
+    # CSRF_COOKIE_SAMESITE = 'Lax'
+    # CORS_ALLOW_ALL_ORIGINS = True  # Only for development
+    # CORS_ALLOW_CREDENTIALS = True
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -33,7 +44,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+# SESSION_COOKIE_AGE = 1209600  # Two weeks in seconds
+# SESSION_SAVE_EVERY_REQUEST = True
 # Application definition
 
 INSTALLED_APPS = [
@@ -89,6 +101,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'scam_sense.wsgi.application'
 
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Default backend
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -155,3 +168,6 @@ SPECTACULAR_SETTINGS = {
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# INSTALLED_APPS += ['corsheaders']
+# MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
