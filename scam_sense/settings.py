@@ -61,7 +61,7 @@ MIDDLEWARE = [
 
 if IS_APP_ENGINE:
     CORS_ALLOWED_ORIGINS = [
-        "https://forwardl.uc.r.appspot.com",
+        "https://scam_sense.uc.r.appspot.com",
     ]
 else:
     CORS_ALLOWED_ORIGINS = [
