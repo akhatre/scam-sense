@@ -16,12 +16,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from scam_sense.views import ScamSenseIndexView, RegistrationView, DashboardView
+
+from rest_framework.routers import DefaultRouter
+from scam_sense.api.registration import UserViewSet
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ScamSenseIndexView.as_view(), name='ScamSenseIndexView'),
     path('register', RegistrationView.as_view(), name='RegistrationView'),
     path('dashboard', DashboardView.as_view(), name='DashboardView'),
+
+    # OpenAPI schema generation endpoint
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # Optional: Swagger UI for easy API browsing
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
+
+router = DefaultRouter()
+router.register("api/users", UserViewSet, basename="user")
+
+urlpatterns += router.urls
