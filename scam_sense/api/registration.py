@@ -1,4 +1,7 @@
+from django.http import JsonResponse
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, status
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework.decorators import action
@@ -33,8 +36,14 @@ class UserRegistrationSerializer(Serializer):
 
 class UserViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
-    serializer_class = UserRegistrationSerializer
 
+    @extend_schema(
+        request=UserRegistrationSerializer,
+        responses={
+            201: {"type": "object", "properties": {"message": {"type": "string"}}},
+            400: {"type": "object", "additionalProperties": {"type": "string"}},
+        },
+    )
     @action(detail=False, methods=["post"])
     def register(self, request):
 

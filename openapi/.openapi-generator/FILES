@@ -3,5 +3,6 @@ apis/UsersApi.ts
 apis/index.ts
 index.ts
 models/UserRegistration.ts
+models/UsersRegisterCreate201Response.ts
 models/index.ts
 runtime.ts

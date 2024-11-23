@@ -51,35 +51,12 @@ function RegistrationForm() {
     password: formData.password || "",
     confirm_password: formData.confirmPassword || "",
 };
-
-
-        // const response = await usersApiClient.usersRegisterCreateRaw({
-        //         firstName: formData.firstName,
-        //         lastName: formData.lastName,
-        //         password: formData.password,
-        //         confirmPassword: formData.confirmPassword,
-        //         email: formData.email,
-        //     });
-
-        console.log(payload);
-        const response = await usersApiClient.usersRegisterCreate({ userRegistration: payload });
-
-        console.log(response);
-        // setMessage(response.message);
-
-        // try {
-        //     const response = await usersApiClient.usersRegisterCreate({
-        //         firstName: formData.firstName,
-        //         lastName: formData.lastName,
-        //         email: formData.email,
-        //         password: formData.password,
-        //         confirmPassword: formData.confirmPassword,
-        //     });
-        //     setMessage(response.message);
-        //     console.log(response);
-        // } catch (err) {
-        //     setError(err.response?.data?.detail || "An error occurred.");
-        // }
+        try {
+            const response = await usersApiClient.usersRegisterCreate({ userRegistration: payload });
+            setMessage(response.message);
+        } catch (err) {
+            setError(err.response?.data?.detail || "An error occurred.");
+        }
     };
 
     return (
