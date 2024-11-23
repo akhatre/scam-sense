@@ -1,1 +1,8 @@
+/db.sqlite3
+/node_modules/
+/local_postgres/
+__pycache__
 .idea
+/dist
+logfile
+/_local_cache/

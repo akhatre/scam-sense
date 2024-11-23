@@ -1,0 +1,15 @@
+{% load static %}
+<!doctype html>
+<link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" >
+<html>
+  <head>
+    <title>FL Vendor Catalogue</title>
+  </head>
+  <body>
+    {% block content %}
+      <div id="root"></div>
+      <script src="{% static 'index_bundle.js' %}"></script>
+    {% endblock content %}
+  </body>
+</html>
+
