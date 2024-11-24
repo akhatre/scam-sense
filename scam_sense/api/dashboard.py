@@ -41,12 +41,11 @@ class SendMessage(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def send(self, request):
         subscriber_email = request.query_params.get('subscriber_email')
-        list_of_students: List[Subscriber] = get_student_emails_from_db(
-            subscriber_email)  # return list of emails ['asd@gmail.com']
-        new_spam_message = generate_spam_message()
+        list_of_students: List[Subscriber] = get_student_emails_from_db(subscriber_email) # return list of emails ['asd@gmail.com']
+        new_spam_message = generate_training_message() #Generate generic message
 
         for _student in list_of_students:
-            personalised_message = personalise_message(new_spam_message, _student)
+            personalised_message = personalise_message(new_spam_message, _student) #This just adds the personalization 
             from_email = generate_random_email()
             send_email(personalised_message, from_email, _student)
 
