@@ -1,0 +1,16 @@
+service: default
+runtime: python312
+entrypoint: GUNICORN_CMD_ARGS="--log-level debug" IS_APP_ENGINE=1 DEBUG=1 gunicorn -b :$PORT wsgi.wsgi:application --timeout 60 --workers 2
+instance_class: F4
+
+automatic_scaling:
+  max_idle_instances: 1
+  min_idle_instances: 1
+  max_pending_latency: 10s
+  max_instances: 1
+  min_instances: 1
+
+handlers:
+- url: .*
+  script: wsgi.application
+  secure: always

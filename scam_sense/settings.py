@@ -12,22 +12,37 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 
+from google.cloud import secretmanager
+client = secretmanager.SecretManagerServiceClient()
+PROJECT_ID = 'scam-sense'
+
+def get_gcp_secret(secret_name):
+    return client.access_secret_version(
+        request={"name": f'projects/{PROJECT_ID}/secrets/{secret_name}/versions/latest'}).payload.data.decode("UTF-8")
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 IS_APP_ENGINE = bool(os.environ.get("IS_APP_ENGINE", False))
 
 
-if IS_APP_ENGINE:
-    ALLOWED_HOSTS = ['scam-sense.uc.r.appspot.com']
-    SESSION_COOKIE_SECURE = True
 
-    CORS_ALLOW_CREDENTIALS = True
-else:
-    ALLOWED_HOSTS = ["127.0.0.1"]
+# if IS_APP_ENGINE:
+#     ALLOWED_HOSTS = ['scam-sense.uc.r.appspot.com']
+#     SESSION_COOKIE_SECURE = True
+#
+#     CORS_ALLOW_CREDENTIALS = True
+# else:
+#     ALLOWED_HOSTS = ["127.0.0.1"]
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+
+CORS_ALLOW_CREDENTIALS = True
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-(m9e29=urczs08u@%b9el+kek72&u996(#%^4nse7*^f0b4^n@'
@@ -35,13 +50,15 @@ SECRET_KEY = 'django-insecure-(m9e29=urczs08u@%b9el+kek72&u996(#%^4nse7*^f0b4^n@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
 
 # SESSION_COOKIE_AGE = 1209600  # Two weeks in seconds
 # SESSION_SAVE_EVERY_REQUEST = True
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,8 +71,8 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,14 +82,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if IS_APP_ENGINE:
-    CORS_ALLOWED_ORIGINS = [
-        "https://scam_sense.uc.r.appspot.com",
-    ]
-else:
-    CORS_ALLOWED_ORIGINS = [
-        "http://127.0.0.1:9090"
-    ]
+# if IS_APP_ENGINE:
+#     CORS_ALLOWED_ORIGINS = [
+#         "https://scam-sense.uc.r.appspot.com",
+#     ]
+# else:
+#     CORS_ALLOWED_ORIGINS = [
+#         "http://127.0.0.1:9090"
+#     ]
 
 
 ROOT_URLCONF = 'scam_sense.urls'
@@ -100,10 +117,25 @@ WSGI_APPLICATION = 'scam_sense.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": "django.db.backends.postgresql",
+        'NAME': 'scam-sense',
+        'USER': 'django-main',
+        'PASSWORD': get_gcp_secret('django-main'),
+        'HOST': (
+            '/cloudsql/scam-sense:us-central1:scam-sense' if IS_APP_ENGINE else "127.0.0.1"
+        ),
+        'PORT': (
+            '5432' if IS_APP_ENGINE else '5633'
+        )
     }
 }
 

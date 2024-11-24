@@ -9,11 +9,11 @@ export const Footer = () => {
                     &copy; {currentYear} ScamSense Ltd. All rights reserved.
                 </p>
                 <p className="mb-0">
-                    <a href="/" className="text-decoration-none">
+                    <a className="text-decoration-none clickable-text" onClick={() => alert("Your data = Our data")}>
                         Privacy Policy
                     </a>{' '}
                     |{' '}
-                    <a href="/" className="text-decoration-none">
+                    <a className="text-decoration-none clickable-text" onClick={() => alert("We do us, you do you")}>
                         Terms of Service
                     </a>
                 </p>

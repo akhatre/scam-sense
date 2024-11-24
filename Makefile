@@ -33,7 +33,7 @@ local-postgres-start:
 
 .PHONY: cloud-sql-proxy
 cloud-sql-proxy:
-	./cloud-sql-proxy --address 0.0.0.0 -p 5633 scam_sense:us-central1:scam-sense-django
+	./cloud-sql-proxy --address 0.0.0.0 -p 5633 scam-sense:us-central1:scam-sense
 
 .PHONY: gcp-psql
 gcp-psql:

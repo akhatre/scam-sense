@@ -17,6 +17,15 @@ const apiUrl = process.env.API_URL;
 
 const usersApiClient = new UsersApi(new Configuration({
     basePath: apiUrl,
+    headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+    },
+    fetchApi: (input, init) => {
+        return fetch(input, {
+            ...init,
+            credentials: 'include', // Add this to enable cookies
+        });
+    },
 }));
 
 function RegistrationForm() {
