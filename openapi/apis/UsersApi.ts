@@ -15,17 +15,17 @@
 
 import * as runtime from '../runtime';
 import type {
+  StudentsAddStudentCreate200Response,
   UserLogin,
   UserRegistration,
-  UsersLoginCreate200Response,
 } from '../models/index';
 import {
+    StudentsAddStudentCreate200ResponseFromJSON,
+    StudentsAddStudentCreate200ResponseToJSON,
     UserLoginFromJSON,
     UserLoginToJSON,
     UserRegistrationFromJSON,
     UserRegistrationToJSON,
-    UsersLoginCreate200ResponseFromJSON,
-    UsersLoginCreate200ResponseToJSON,
 } from '../models/index';
 
 export interface UsersLoginCreateRequest {
@@ -43,7 +43,7 @@ export class UsersApi extends runtime.BaseAPI {
 
     /**
      */
-    async usersLoginCreateRaw(requestParameters: UsersLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UsersLoginCreate200Response>> {
+    async usersLoginCreateRaw(requestParameters: UsersLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StudentsAddStudentCreate200Response>> {
         if (requestParameters['userLogin'] == null) {
             throw new runtime.RequiredError(
                 'userLogin',
@@ -68,19 +68,19 @@ export class UsersApi extends runtime.BaseAPI {
             body: UserLoginToJSON(requestParameters['userLogin']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UsersLoginCreate200ResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => StudentsAddStudentCreate200ResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async usersLoginCreate(requestParameters: UsersLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UsersLoginCreate200Response> {
+    async usersLoginCreate(requestParameters: UsersLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StudentsAddStudentCreate200Response> {
         const response = await this.usersLoginCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async usersRegisterCreateRaw(requestParameters: UsersRegisterCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UsersLoginCreate200Response>> {
+    async usersRegisterCreateRaw(requestParameters: UsersRegisterCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StudentsAddStudentCreate200Response>> {
         if (requestParameters['userRegistration'] == null) {
             throw new runtime.RequiredError(
                 'userRegistration',
@@ -105,12 +105,12 @@ export class UsersApi extends runtime.BaseAPI {
             body: UserRegistrationToJSON(requestParameters['userRegistration']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UsersLoginCreate200ResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => StudentsAddStudentCreate200ResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async usersRegisterCreate(requestParameters: UsersRegisterCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UsersLoginCreate200Response> {
+    async usersRegisterCreate(requestParameters: UsersRegisterCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StudentsAddStudentCreate200Response> {
         const response = await this.usersRegisterCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -20,6 +20,7 @@ from django.shortcuts import redirect
 from django.urls import path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
+from scam_sense.api.dashboard import StudentsViewSet
 from scam_sense.views import ScamSenseIndexView, RegistrationView, DashboardView
 
 from rest_framework.routers import DefaultRouter
@@ -46,5 +47,6 @@ urlpatterns = [
 
 router = DefaultRouter()
 router.register("api/users", UserViewSet, basename="user")
+router.register("api/students", StudentsViewSet, basename="students")
 
 urlpatterns += router.urls
