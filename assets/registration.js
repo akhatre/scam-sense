@@ -10,6 +10,7 @@ import {MainNavbar} from "./navbar";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 import '../assets/scss/index.scss';
+import {Footer} from "./footer";
 
 
 const apiUrl = process.env.API_URL;
@@ -77,7 +78,7 @@ function RegistrationForm() {
     return (
         <div>
             <MainNavbar/>
-            <div className="container mt-5">
+            <div className="container mt-5 mb-5">
                 <div className="row justify-content-center">
                     <div className="col-md-6">
                         <div className="card shadow">
@@ -181,6 +182,7 @@ function RegistrationForm() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }

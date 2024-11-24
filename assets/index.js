@@ -9,11 +9,11 @@ import {MainNavbar} from "./navbar";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 import '../assets/scss/index.scss';
+import {Footer} from "./footer";
 
 const isLoggedIn = window.djangoContext?.isLoggedIn || false;
 
 const ScamSenseIndex = function (props) {
-    const currentYear = new Date().getFullYear();
     return (
         <div className="main-page">
             <MainNavbar/>
@@ -22,22 +22,7 @@ const ScamSenseIndex = function (props) {
                 <button onClick={() => {isLoggedIn ? window.location.href = '/dashboard' : window.location.href = '/register'}} className="btn btn-primary">Start Here</button>
             </div>
 
-            <footer className="border-top bg-light py-3">
-                <div className="container text-center">
-                    <p className="mb-0">
-                        &copy; {currentYear} ScamSense Ltd. All rights reserved.
-                    </p>
-                    <p className="mb-0">
-                        <a href="/" className="text-decoration-none">
-                            Privacy Policy
-                        </a>{' '}
-                        |{' '}
-                        <a href="/" className="text-decoration-none">
-                            Terms of Service
-                        </a>
-                    </p>
-                </div>
-            </footer>
+            <Footer />
 
         </div>
     )
