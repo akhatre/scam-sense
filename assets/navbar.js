@@ -17,9 +17,9 @@ export const MainNavbar = (isLoggedIn = null) => {
         <Container fluid="fluid" className="mx-1">
             <Navbar bg="light" variant="light" expand="lg">
                 <Navbar.Brand href="/">
-                    <img src="/static/images/logo.webp" width="30" height="30"
-                         className="d-inline-block align-top main-logo" alt=""/>
-                    Scam Sense
+                    {/*<img src="/static/images/logo.webp" width="30" height="30"*/}
+                    {/*     className="d-inline-block align-top main-logo" alt=""/>*/}
+                    Scam | Sense
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
