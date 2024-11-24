@@ -170,6 +170,7 @@ paths:
       security:
       - cookieAuth: []
       - basicAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -200,17 +201,12 @@ paths:
   /api/students/get_students/:
     get:
       operationId: students_get_students_list
-      parameters:
-      - in: query
-        name: user_email
-        schema:
-          type: string
-        required: true
       tags:
       - students
       security:
       - cookieAuth: []
       - basicAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -318,7 +314,7 @@ components:
           type: string
         second_name:
           type: string
-        language:
+        native_language:
           type: string
           writeOnly: true
         email:
@@ -328,7 +324,7 @@ components:
       - age
       - email
       - first_name
-      - language
+      - native_language
       - second_name
     Student:
       type: object
@@ -345,7 +341,7 @@ components:
           type: string
           readOnly: true
           nullable: true
-        language:
+        native_language:
           type: string
           readOnly: true
           nullable: true
@@ -357,7 +353,7 @@ components:
       - age
       - email
       - first_name
-      - language
+      - native_language
       - second_name
     UserLogin:
       type: object

@@ -20,9 +20,16 @@ const apiUrl = process.env.API_URL;
 
 const studentsApiClient = new StudentsApi(new Configuration({
     basePath: apiUrl,
+    headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+    },
+    fetchApi: (input, init) => {
+        return fetch(input, {
+            ...init,
+            credentials: 'include', // Add this to enable cookies
+        });
+    },
 }));
-
-
 
 
 const Dashboard = function (props) {
@@ -30,6 +37,29 @@ const Dashboard = function (props) {
         e.preventDefault();
         alert('A training example has been sent!')
     }
+
+    const [students, setStudents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+
+    useEffect(() => {
+        // Fetch students from API
+        const fetchStudents = async () => {
+            try {
+                const response = await studentsApiClient.studentsGetStudentsList();
+                setStudents(response); // Assuming response.data contains the list of students
+                console.log(response);
+            } catch (err) {
+                setError('Failed to fetch students');
+                console.log(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchStudents();
+    }, []);
 
     const [show, setShow] = useState(false);
     const [formData, setFormData] = useState({
@@ -39,7 +69,7 @@ const Dashboard = function (props) {
         age: '',
         nativeLanguage: '',
     });
-    const [alert, setAlert] = useState({show: false, variant: '', message: ''});
+    const [current_alert, setAlert] = useState({show: false, variant: '', message: ''});
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -53,7 +83,7 @@ const Dashboard = function (props) {
         try {
             const payload = {
                 age: formData.age || null,
-                first_name: formData.firstName || "",
+                first_name: formData.name || "",
                 second_name: formData.surname || "",
                 email: formData.email || "",
                 native_language: formData.nativeLanguage || "",
@@ -72,14 +102,46 @@ const Dashboard = function (props) {
         <div>
             <MainNavbar/>
 
+
+            <h3>Your Students</h3>
+
             <div>
-                <Button variant="primary" onClick={handleShow}>
+                <table style={{width: '100%', borderCollapse: 'collapse'}}>
+                    <thead>
+                    <tr style={{backgroundColor: '#f2f2f2'}}>
+                        <th style={{border: '1px solid #ddd', padding: '8px'}}>First Name</th>
+                        <th style={{border: '1px solid #ddd', padding: '8px'}}>Second Name</th>
+                        <th style={{border: '1px solid #ddd', padding: '8px'}}>Age</th>
+                        <th style={{border: '1px solid #ddd', padding: '8px'}}>Native Language</th>
+                        <th style={{border: '1px solid #ddd', padding: '8px'}}>Email</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {students.map((student) => (
+                        <tr key={student.id} style={{border: '1px solid #ddd'}}>
+                            <td style={{padding: '8px'}}>{student.first_name}</td>
+                            <td style={{padding: '8px'}}>{student.second_name}</td>
+                            <td style={{padding: '8px'}}>{student.age}</td>
+                            <td style={{padding: '8px'}}>{student.native_language}</td>
+                            <td style={{padding: '8px'}}>{student.email}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+
+            <div>
+                <Button variant="primary" onClick={handleShow} className="my-3">
                     Add Student
                 </Button>
 
-                {alert.show && (
-                    <Alert variant={alert.variant} className="mt-3">
-                        {alert.message}
+                {current_alert.show && (
+                    <Alert variant={current_alert.variant} className="mt-3">
+                        {current_alert.message}
                     </Alert>
                 )}
 
@@ -153,7 +215,7 @@ const Dashboard = function (props) {
             </div>
 
 
-            <button onClick={sendLesson} className="btn btn-primary">Send a training example</button>
+            <button onClick={sendLesson} className="btn btn-primary my-3">Send a training example</button>
 
             <Footer/>
         </div>

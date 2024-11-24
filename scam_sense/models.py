@@ -10,7 +10,7 @@ class Student(models.Model):
     age = models.IntegerField(null=True, blank=True)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     second_name = models.CharField(max_length=100, null=True, blank=True)
-    language = models.CharField(max_length=100, null=True, blank=True)
+    native_language = models.CharField(max_length=100, null=True, blank=True)
     email = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:

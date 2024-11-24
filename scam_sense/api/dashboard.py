@@ -12,7 +12,7 @@ from typing import List
 
 from scam_sense.io.email import send_email
 from scam_sense.models import Student
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.serializers import Serializer, CharField, ValidationError,IntegerField
 
 
@@ -58,7 +58,7 @@ class StudentSerializer(serializers.ModelSerializer):
             'age',
             'first_name',
             'second_name',
-            'language',
+            'native_language',
             'email',
         ]
         read_only_fields = fields
@@ -79,7 +79,7 @@ class GetStudentViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def get_students(self, request):
         user_email = request.query_params.get('user_email')
-        results = self.queryset.filter(
+        results = Student.objects.filter(
             user__user_username=user_email
         ).order_by('first_name')
 
@@ -92,13 +92,13 @@ class AddStudentSerializer(Serializer):
     age = IntegerField(required=True)
     first_name = CharField(required=True)
     second_name = CharField(required=True)
-    language = CharField(write_only=True, required=True)
+    native_language = CharField(write_only=True, required=True)
     email = CharField(write_only=True, required=True)
 
 
 class StudentsViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
-
+    #todo: this should check auth
+    permission_classes = [AllowAny]
     @extend_schema(
         request=AddStudentSerializer,
         responses={
@@ -114,7 +114,7 @@ class StudentsViewSet(viewsets.ViewSet):
 
         current_user = request.user
 
-        Student.object.create(
+        Student.objects.create(
             user=current_user,
             first_name=request.data['first_name'],
             second_name=request.data['second_name'],
@@ -126,18 +126,14 @@ class StudentsViewSet(viewsets.ViewSet):
         return JsonResponse({'message': 'Login successful'})
 
     @extend_schema(
-        parameters=[
-            OpenApiParameter(name='user_email',
-                             required=True,
-                             type=str),
-        ],
+        parameters=[],
         responses={200: StudentSerializer(many=True)}
     )
     @action(detail=False, methods=['get'])
     def get_students(self, request):
-        user_email = request.query_params.get('user_email')
-        results = self.queryset.filter(
-            user__user_username=user_email
+        user_email = request.user.email
+        results = Student.objects.filter(
+            user__email=user_email
         ).order_by('first_name')
 
         serializer = StudentSerializer(results, many=True)
