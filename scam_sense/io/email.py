@@ -16,12 +16,12 @@ def get_secret(secret_name, project_id):
         print(f"Failed to retrieve secret '{secret_name}': {str(e)}")
         raise
 
-def generate_random_email():
+def generate_random_from_email():
     """
     Generates a random sender email address.
     """
     import random
-    random_name = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz1234567890', k=8))
+    random_name = ''.join(random.choices('legitimateBusiness', k=8))
     return f"{random_name}@scamsense.com"
 
 def send_email(personalised_message, from_address, mail_address):
