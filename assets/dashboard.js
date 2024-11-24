@@ -8,13 +8,13 @@ import {BrowserRouter, useNavigate} from 'react-router-dom';
 import {MainNavbar} from "./navbar";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 import '../assets/scss/index.scss';
-
+const isLoggedIn = window.djangoContext?.isLoggedIn || false;
 
 const Dashboard = function (props) {
     return (
-        <Container>
+        <div>
             <MainNavbar />
-        </Container>
+        </div>
     )
 }
 

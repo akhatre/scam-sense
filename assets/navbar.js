@@ -6,9 +6,13 @@ import {Table, Col, Row, Nav, Navbar, Tab, Container, Dropdown} from 'react-boot
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import '../assets/scss/index.scss';
 
-const isLoggedIn = window.djangoContext?.isLoggedIn || false;
 
-export const MainNavbar = () => {
+
+export const MainNavbar = (isLoggedIn = null) => {
+    if (isLoggedIn === null) {
+        isLoggedIn = window.djangoContext?.isLoggedIn || false;
+    }
+
     return (
         <Container fluid="fluid" className="mx-1">
             <Navbar bg="light" variant="light" expand="lg">
@@ -21,7 +25,10 @@ export const MainNavbar = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto">
                         {
-                            isLoggedIn ? <Nav.Link href="dashboard">Dashboard</Nav.Link> : <Nav.Link href="register">Register</Nav.Link>
+                            isLoggedIn ? <Nav.Link href="dashboard">Dashboard</Nav.Link> : <Nav.Link href="register">Register or Login</Nav.Link>
+                        }
+                        {
+                            isLoggedIn ? <Nav.Link href="logout">Logout</Nav.Link> : ""
                         }
                     </Nav>
                 </Navbar.Collapse>

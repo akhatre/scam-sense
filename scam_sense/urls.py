@@ -15,6 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 from django.urls import path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
@@ -23,11 +25,17 @@ from scam_sense.views import ScamSenseIndexView, RegistrationView, DashboardView
 from rest_framework.routers import DefaultRouter
 from scam_sense.api.registration import UserViewSet
 
+
+def custom_logout_view(request):
+    logout(request)  # Logs out the user
+    return redirect('/')  # Redirect to homepage or another page
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ScamSenseIndexView.as_view(), name='ScamSenseIndexView'),
     path('register', RegistrationView.as_view(), name='RegistrationView'),
-    # path('login', LoginView.as_view(), name='LoginView'),
+    path('logout', custom_logout_view, name='LogoutView'),
     path('dashboard', DashboardView.as_view(), name='DashboardView'),
 
     # OpenAPI schema generation endpoint

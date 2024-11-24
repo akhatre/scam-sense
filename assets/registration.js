@@ -16,15 +16,6 @@ const apiUrl = process.env.API_URL;
 
 const usersApiClient = new UsersApi(new Configuration({
     basePath: apiUrl,
-    // headers: {
-    //     'X-CSRFToken': Cookies.get('csrftoken'),
-    // },
-    // fetchApi: (input, init) => {
-    //     return fetch(input, {
-    //         ...init,
-    //         credentials: 'include', // Add this to enable cookies
-    //     });
-    // },
 }));
 
 function RegistrationForm() {
@@ -50,6 +41,7 @@ function RegistrationForm() {
         e.preventDefault();
         setError("");
         setMessage("");
+        // const navigate = useNavigate();
 
         if (!isLoginForm) {
             const payload = {
@@ -62,6 +54,7 @@ function RegistrationForm() {
             try {
                 const response = await usersApiClient.usersRegisterCreate({userRegistration: payload});
                 setMessage(response.message);
+                window.location.href = '/dashboard';
             } catch (err) {
                 setError(err.response?.data?.detail || "An error occurred.");
             }
@@ -73,34 +66,16 @@ function RegistrationForm() {
             try {
                 const response = await usersApiClient.usersLoginCreate({userLogin: payload});
                 setMessage(response.message);
+                window.location.href = '/dashboard';
             } catch (err) {
                 setError(err.response?.data?.detail || "An error occurred.");
             }
-
-            // const csrfToken = await fetchCSRFToken();
-            //
-            // try {
-            //     const response = await fetch('/login', {
-            //         method: 'post',
-            //         headers: {
-            //             'Content-Type': 'application/json', // Ensures the server knows to expect JSON
-            //             'X-CSRFToken': csrfToken
-            //         },
-            //         body: JSON.stringify({
-            //             email: formData.email || "",
-            //             password: formData.password || "",
-            //         })
-            //     });
-            // } catch (err) {
-            //     setError(err.response?.data?.detail || "An error occurred.");
-            // }
-
 
         }
     };
 
     return (
-        <Container>
+        <div>
             <MainNavbar/>
             <div className="container mt-5">
                 <div className="row justify-content-center">
@@ -206,7 +181,7 @@ function RegistrationForm() {
                     </div>
                 </div>
             </div>
-        </Container>
+        </div>
     );
 }
 

@@ -4,3 +4,13 @@
   margin-right: 5px;
   cursor: pointer;
 }
+
+
+.image-container {
+  background-image: url('/static/images/main-bg.svg'); /* Replace with your image path */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  min-height: 100vh;
+}
+
+
