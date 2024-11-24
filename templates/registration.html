@@ -4,19 +4,12 @@
 <html>
   <head>
     <title>Scam Sense</title>
-      <script>
-        // Pass Django context variables to the JavaScript global scope
-        window.djangoContext = {
-            isLoggedIn: {{ is_logged_in|yesno:"true,false" }}
-        };
-    </script>
   </head>
   <body>
     {% block content %}
       <div id="root"></div>
-      <script src="{% static 'index_bundle.js' %}"></script>
+      <script src="{% static 'registration_bundle.js' %}"></script>
     {% endblock content %}
   </body>
 </html>
-
 

@@ -18,8 +18,8 @@ migrate:
 
 .PHONY: openapi
 openapi:
-	python manage.py spectacular --file scam_sense/views/api/openapi.yaml
-	openapi-generator-cli generate -i scam_sense/views/api/openapi.yaml -g typescript-fetch -o openapi --additional-properties=modelPropertyNaming=original
+	python manage.py spectacular --file scam_sense/api/openapi.yaml
+	openapi-generator-cli generate -i scam_sense/api/openapi.yaml -g typescript-fetch -o openapi --additional-properties=modelPropertyNaming=original
 
 .PHONY: migrate-app
 migrate-app:

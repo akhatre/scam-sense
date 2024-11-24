@@ -3,9 +3,13 @@ const path = require('path');
 
 
 module.exports = (_, {mode}) => ({
-  entry: './assets/index.js',  // path to our input file
+  entry: {
+    index: './assets/index.js',
+    registration: './assets/registration.js',
+    dashboard: './assets/dashboard.js',
+  },  // path to our input file
   output: {
-    filename: 'index_bundle.js',  // output bundle file name
+    filename: '[name]_bundle.js',  // output bundle file name
     path: path.resolve(__dirname, './static'),  // path to our Django static directory
   },
   resolve: {
@@ -31,3 +35,4 @@ module.exports = (_, {mode}) => ({
     ]
   }
 });
+

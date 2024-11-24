@@ -1,0 +1,12 @@
+apis/SchemaApi.ts
+apis/StudentsApi.ts
+apis/UsersApi.ts
+apis/index.ts
+index.ts
+models/AddStudent.ts
+models/Student.ts
+models/StudentsAddStudentCreate200Response.ts
+models/UserLogin.ts
+models/UserRegistration.ts
+models/index.ts
+runtime.ts

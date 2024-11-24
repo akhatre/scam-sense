@@ -1,3 +1,5 @@
+from django.http import JsonResponse
+from rest_framework import serializers
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -9,6 +11,9 @@ from scam_sense.generation.mistral import generate_spam_message
 from typing import List
 
 from scam_sense.io.email import send_email
+from scam_sense.models import Student
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.serializers import Serializer, CharField, ValidationError,IntegerField
 
 
 class Subscriber:
@@ -18,7 +23,9 @@ class Subscriber:
 
 
 def get_student_emails_from_db(subscriber_email):
+    pass
 
+def generate_random_email():
     pass
 
 
@@ -42,3 +49,92 @@ class SendMessage(viewsets.ModelViewSet):
             from_email = generate_random_email()
             send_email(personalised_message, from_email, _student)
 
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = [
+            'age',
+            'first_name',
+            'second_name',
+            'native_language',
+            'email',
+        ]
+        read_only_fields = fields
+
+
+class GetStudentViewSet(viewsets.ModelViewSet):
+    serializer_class = StudentSerializer
+    queryset = Student.objects.all()
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(name='user_email',
+                             required=True,
+                             type=str),
+        ],
+        responses={200: StudentSerializer(many=True)}
+    )
+    @action(detail=False, methods=['get'])
+    def get_students(self, request):
+        user_email = request.query_params.get('user_email')
+        results = Student.objects.filter(
+            user__user_username=user_email
+        ).order_by('first_name')
+
+        serializer = self.get_serializer(results, many=True)
+
+        return Response(serializer.data)
+
+
+class AddStudentSerializer(Serializer):
+    age = IntegerField(required=True)
+    first_name = CharField(required=True)
+    second_name = CharField(required=True)
+    native_language = CharField(write_only=True, required=True)
+    email = CharField(write_only=True, required=True)
+
+
+class StudentsViewSet(viewsets.ViewSet):
+    #todo: this should check auth
+    permission_classes = [AllowAny]
+    @extend_schema(
+        request=AddStudentSerializer,
+        responses={
+            200: {"type": "object", "properties": {"message": {"type": "string"}}},
+            401: {"type": "object", "properties": {"message": {"type": "string"}}},
+            400: {"type": "object", "additionalProperties": {"type": "string"}},
+        },
+    )
+    @action(detail=False, methods=["post"])
+    def add_student(self, request):
+
+        serializer = AddStudentSerializer(data=request.data)
+
+        current_user = request.user
+
+        Student.objects.create(
+            user=current_user,
+            first_name=request.data['first_name'],
+            second_name=request.data['second_name'],
+            age=request.data['age'],
+            email=request.data['email'],
+            native_language=request.data['native_language'],
+        )
+
+        return JsonResponse({'message': 'Login successful'})
+
+    @extend_schema(
+        parameters=[],
+        responses={200: StudentSerializer(many=True)}
+    )
+    @action(detail=False, methods=['get'])
+    def get_students(self, request):
+        user_email = request.user.email
+        results = Student.objects.filter(
+            user__email=user_email
+        ).order_by('first_name')
+
+        serializer = StudentSerializer(results, many=True)
+
+        return Response(serializer.data)
