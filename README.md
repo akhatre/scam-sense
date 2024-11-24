@@ -1,4 +1,4 @@
-# Scam Sense
+# Scam|Sense
 
 **Scam Sense** is a training service designed to help individuals recognize and identify scam emails. By simulating phishing scenarios and sending realistic test emails to users' personal email addresses, Scam Sense provides an engaging and practical way to improve awareness and online security skills.
 
