@@ -42,10 +42,7 @@ const Dashboard = function (props) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-
-    useEffect(() => {
-        // Fetch students from API
-        const fetchStudents = async () => {
+    const fetchStudents = async () => {
             try {
                 const response = await studentsApiClient.studentsGetStudentsList();
                 setStudents(response); // Assuming response.data contains the list of students
@@ -58,6 +55,9 @@ const Dashboard = function (props) {
             }
         };
 
+
+    useEffect(() => {
+        // Fetch students from API
         fetchStudents();
     }, []);
 
@@ -91,6 +91,7 @@ const Dashboard = function (props) {
             // Replace with your OpenAPI client call
             await studentsApiClient.studentsAddStudentCreate({addStudent: payload});
             setAlert({show: true, variant: 'success', message: 'Student added successfully!'});
+            fetchStudents();
         } catch (error) {
             setAlert({show: true, variant: 'danger', message: 'Failed to add student. Please try again.'});
         } finally {
@@ -102,8 +103,8 @@ const Dashboard = function (props) {
         <div>
             <MainNavbar/>
 
-
-            <h3>Your Students</h3>
+            <div className="mx-4">
+            <h3 className="mt-4">Your Students</h3>
 
             <div>
                 <table style={{width: '100%', borderCollapse: 'collapse'}}>
@@ -216,6 +217,7 @@ const Dashboard = function (props) {
 
 
             <button onClick={sendLesson} className="btn btn-primary my-3">Send a training example</button>
+            </div>
 
             <Footer/>
         </div>
